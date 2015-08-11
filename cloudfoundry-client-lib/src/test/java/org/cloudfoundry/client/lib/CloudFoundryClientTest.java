@@ -41,6 +41,7 @@ import org.cloudfoundry.client.lib.domain.ApplicationStats;
 import org.cloudfoundry.client.lib.domain.CloudApplication;
 import org.cloudfoundry.client.lib.domain.CloudDomain;
 import org.cloudfoundry.client.lib.domain.CloudEntity;
+import org.cloudfoundry.client.lib.domain.CloudEntity.Meta;
 import org.cloudfoundry.client.lib.domain.CloudEvent;
 import org.cloudfoundry.client.lib.domain.CloudInfo;
 import org.cloudfoundry.client.lib.domain.CloudOrganization;
@@ -55,6 +56,7 @@ import org.cloudfoundry.client.lib.domain.CloudServiceOffering;
 import org.cloudfoundry.client.lib.domain.CloudServicePlan;
 import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
+import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
 import org.cloudfoundry.client.lib.domain.CrashInfo;
 import org.cloudfoundry.client.lib.domain.CrashesInfo;
 import org.cloudfoundry.client.lib.domain.InstanceInfo;
@@ -431,6 +433,44 @@ public class CloudFoundryClientTest {
 			if (event.getTimestamp() != null) {
 				assertTimeWithinRange("Event time should be very recent", event.getTimestamp().getTime(), FIVE_MINUTES);
 			}
+		}
+	}
+	
+	//
+	// Basic Event Usage Tests
+	//
+	
+	@Test
+	public void appUsageEventsAvailable() throws Exception {
+		createAndUploadAndStartSimpleSpringApp("appUsageEvent");
+		List<CloudUsageEvent> events = connectedClient.getApplicationUsageEvents();
+		assertUsageEvents(events);
+		assertUsageEventTimestamps(events);
+	}
+
+	private void assertUsageEvents(List<CloudUsageEvent> events) {
+		assertNotNull(events);
+		assertTrue(events.size() > 0);
+
+		for (CloudUsageEvent event : events) {
+			assertNotNull(event.getState());
+			assertNotNull(event.getMemoryInMBPerInstance());
+			assertNotNull(event.getInstanceCount());
+			assertNotNull(event.getAppGUID());
+			assertNotNull(event.getAppName());
+			assertNotNull(event.getOrgGUID());
+			assertNotNull(event.getSpaceGUID());
+			assertNotNull(event.getSpaceName());
+		}
+	}
+
+	private void assertUsageEventTimestamps(List<CloudUsageEvent> events) {
+		for (CloudUsageEvent event : events) {
+			Meta meta = event.getMeta();
+			assertNotNull(meta);
+			assertNotNull(meta.getGuid());
+			Date created = meta.getCreated();
+			assertNotNull(created);
 		}
 	}
 
