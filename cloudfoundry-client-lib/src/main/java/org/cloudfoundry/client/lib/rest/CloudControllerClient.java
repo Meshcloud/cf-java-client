@@ -48,7 +48,6 @@ import org.cloudfoundry.client.lib.domain.CloudServiceInstance;
 import org.cloudfoundry.client.lib.domain.CloudServiceOffering;
 import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
-import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
 import org.cloudfoundry.client.lib.domain.CrashesInfo;
 import org.cloudfoundry.client.lib.domain.InstancesInfo;
 import org.cloudfoundry.client.lib.domain.Staging;
@@ -310,6 +309,4 @@ public interface CloudControllerClient {
 	void unbindSecurityGroup(String orgName, String spaceName, String securityGroupName);
 
 	Map<String, CloudUser> getOrganizationUsers(String orgName);
-
-	List<CloudUsageEvent> getApplicationUsageEvents();
 }

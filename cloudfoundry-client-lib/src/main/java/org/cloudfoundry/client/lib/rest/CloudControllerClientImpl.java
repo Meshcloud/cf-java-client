@@ -75,7 +75,6 @@ import org.cloudfoundry.client.lib.domain.CloudServiceOffering;
 import org.cloudfoundry.client.lib.domain.CloudServicePlan;
 import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
-import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
 import org.cloudfoundry.client.lib.domain.CrashInfo;
 import org.cloudfoundry.client.lib.domain.CrashesInfo;
 import org.cloudfoundry.client.lib.domain.InstanceState;
@@ -1810,24 +1809,6 @@ public class CloudControllerClientImpl implements CloudControllerClient {
 		for (Map<String, Object> resource : resourceList) {
 			if (resource != null) {
 				events.add(resourceMapper.mapResource(resource, CloudEvent.class));
-			}
-		}
-		return events;
-	}
-	
-	@Override
-	public List<CloudUsageEvent> getApplicationUsageEvents() {
-		Map<String, Object> urlVars = new HashMap<String, Object>();
-		String urlPath = "/v2/app_usage_events";
-		return doGetUsageEvents(urlPath, urlVars);
-	}
-	
-	private List<CloudUsageEvent> doGetUsageEvents(String urlPath, Map<String, Object> urlVars) {
-		List<Map<String, Object>> resourceList = getAllResources(urlPath, urlVars);
-		List<CloudUsageEvent> events = new ArrayList<CloudUsageEvent>();
-		for (Map<String, Object> resource : resourceList) {
-			if (resource != null) {
-				events.add(resourceMapper.mapResource(resource, CloudUsageEvent.class));
 			}
 		}
 		return events;

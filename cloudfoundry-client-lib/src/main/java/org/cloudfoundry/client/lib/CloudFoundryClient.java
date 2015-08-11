@@ -42,7 +42,6 @@ import org.cloudfoundry.client.lib.domain.CloudServiceInstance;
 import org.cloudfoundry.client.lib.domain.CloudServiceOffering;
 import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
-import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
 import org.cloudfoundry.client.lib.domain.CrashesInfo;
 import org.cloudfoundry.client.lib.domain.InstancesInfo;
 import org.cloudfoundry.client.lib.domain.Staging;
@@ -364,10 +363,6 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 
 	public List<CloudEvent> getApplicationEvents(String appName) {
 		return cc.getApplicationEvents(appName);
-	}
-	
-	public List<CloudUsageEvent> getApplicationUsageEvents() {
-		return cc.getApplicationUsageEvents();
 	}
 
 	/**

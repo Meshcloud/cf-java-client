@@ -33,7 +33,6 @@ import org.cloudfoundry.client.lib.domain.CloudServicePlan;
 import org.cloudfoundry.client.lib.domain.CloudServiceBroker;
 import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
-import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
 import org.cloudfoundry.client.lib.domain.SecurityGroupRule;
 import org.cloudfoundry.client.lib.domain.Staging;
 import org.cloudfoundry.client.lib.domain.CloudUser;
@@ -83,9 +82,6 @@ public class CloudEntityResourceMapper {
 		}
 		if (targetClass == CloudEvent.class) {
 			return (T) mapEventResource(resource);
-		}
-		if (targetClass == CloudUsageEvent.class) {
-			return (T) mapUsageEventResource(resource);
 		}
 		if (targetClass == CloudService.class) {
 			return (T) mapServiceResource(resource);
@@ -237,22 +233,6 @@ public class CloudEntityResourceMapper {
 		event.setActeeName(getEntityAttribute(resource, "actee_name", String.class));
 		Date timestamp = parseDate(getEntityAttribute(resource, "timestamp", String.class));
 		event.setTimestamp(timestamp);
-
-		return event;
-	}
-	
-	protected CloudUsageEvent mapUsageEventResource(Map<String, Object> resource) {
-		CloudUsageEvent event = new CloudUsageEvent(
-			getMeta(resource),
-			getNameOfResource(resource));
-		event.setState(getEntityAttribute(resource, "state", String.class));
-		event.setMemoryInMBPerInstance(getEntityAttribute(resource, "memory_in_mb_per_instance", Integer.class));
-		event.setInstanceCount(getEntityAttribute(resource, "instance_count", Integer.class));
-		event.setAppGUID(getEntityAttribute(resource, "app_guid", UUID.class));
-		event.setAppName(getEntityAttribute(resource, "app_name", String.class));
-		event.setOrgGUID(getEntityAttribute(resource, "org_guid", UUID.class));
-		event.setSpaceGUID(getEntityAttribute(resource, "space_guid", UUID.class));
-		event.setSpaceName(getEntityAttribute(resource, "space_name", String.class));
 
 		return event;
 	}
