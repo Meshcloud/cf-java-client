@@ -43,7 +43,6 @@ import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
 import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
 import org.cloudfoundry.client.lib.domain.CloudUser;
-import org.cloudfoundry.client.lib.domain.InstanceState;
 import org.cloudfoundry.client.lib.domain.SecurityGroupRule;
 import org.cloudfoundry.client.lib.domain.Staging;
 
@@ -52,7 +51,7 @@ import org.cloudfoundry.client.lib.domain.Staging;
  *
  * @author Thomas Risberg
  */
-//TODO: use some more advanced JSON mapping framework?
+// TODO: use some more advanced JSON mapping framework?
 @SuppressWarnings("ConstantConditions")
 public class CloudEntityResourceMapper {
 
@@ -116,26 +115,29 @@ public class CloudEntityResourceMapper {
 		if (targetClass == CloudJob.class) {
 			return (T) mapJobResource(resource);
 		}
-		if (targetClass == CloudUser.class){
-            return (T) mapUserResource(resource);
-        }
-		if (targetClass ==  CloudServicePlan.class){
+		if (targetClass == CloudUser.class) {
+			return (T) mapUserResource(resource);
+		}
+		if (targetClass == CloudServicePlan.class) {
 			return (T) mapServicePlanResource(resource);
+		}
+		if (targetClass == CloudServiceBinding.class) {
+			return (T) mapServiceBinding(resource);
 		}
 		throw new IllegalArgumentException(
 				"Error during mapping - unsupported class for entity mapping " + targetClass.getName());
 	}
 
-    private CloudUser mapUserResource(Map<String, Object> resource) {
-        boolean isActiveUser = getEntityAttribute(resource, "active", Boolean.class);
-        boolean isAdminUser = getEntityAttribute(resource, "admin", Boolean.class);
-        String defaultSpaceGuid = getEntityAttribute(resource, "default_space_guid", String.class);
-        String username = getEntityAttribute(resource, "username", String.class);
+	private CloudUser mapUserResource(Map<String, Object> resource) {
+		boolean isActiveUser = getEntityAttribute(resource, "active", Boolean.class);
+		boolean isAdminUser = getEntityAttribute(resource, "admin", Boolean.class);
+		String defaultSpaceGuid = getEntityAttribute(resource, "default_space_guid", String.class);
+		String username = getEntityAttribute(resource, "username", String.class);
 
-        return new CloudUser(getMeta(resource), username,isAdminUser,isActiveUser,defaultSpaceGuid);
-    }
+		return new CloudUser(getMeta(resource), username, isAdminUser, isActiveUser, defaultSpaceGuid);
+	}
 
-    private CloudSpace mapSpaceResource(Map<String, Object> resource) {
+	private CloudSpace mapSpaceResource(Map<String, Object> resource) {
 		Map<String, Object> organizationMap = getEmbeddedResource(resource, "organization");
 		CloudOrganization organization = null;
 		if (organizationMap != null) {
@@ -160,9 +162,8 @@ public class CloudEntityResourceMapper {
 		int totalRoutes = getEntityAttribute(resource, "total_routes", Integer.class);
 		long memoryLimit = getEntityAttribute(resource, "memory_limit", Long.class);
 
-		return new CloudQuota(getMeta(resource), getNameOfResource(resource),
-			nonBasicServicesAllowed, totalServices, totalRoutes,
-			memoryLimit);
+		return new CloudQuota(getMeta(resource), getNameOfResource(resource), nonBasicServicesAllowed, totalServices,
+				totalRoutes, memoryLimit);
 	}
 
 	private CloudDomain mapDomainResource(Map<String, Object> resource) {
@@ -187,13 +188,11 @@ public class CloudEntityResourceMapper {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private CloudApplication mapApplicationResource(Map<String, Object> resource) {
-		CloudApplication app = new CloudApplication(
-				getMeta(resource),
-				getNameOfResource(resource));
+		CloudApplication app = new CloudApplication(getMeta(resource), getNameOfResource(resource));
 		app.setInstances(getEntityAttribute(resource, "instances", Integer.class));
 		app.setServices(new ArrayList<String>());
 		app.setState(CloudApplication.AppState.valueOf(getEntityAttribute(resource, "state", String.class)));
-		//TODO: debug
+		// TODO: debug
 		app.setDebug(null);
 
 		Integer runningInstancesAttribute = getEntityAttribute(resource, "running_instances", Integer.class);
@@ -233,9 +232,7 @@ public class CloudEntityResourceMapper {
 	}
 
 	private CloudEvent mapEventResource(Map<String, Object> resource) {
-		CloudEvent event = new CloudEvent(
-			getMeta(resource),
-			getNameOfResource(resource));
+		CloudEvent event = new CloudEvent(getMeta(resource), getNameOfResource(resource));
 		event.setType(getEntityAttribute(resource, "type", String.class));
 		event.setActor(getEntityAttribute(resource, "actor", String.class));
 		event.setActorType(getEntityAttribute(resource, "actor_type", String.class));
@@ -248,11 +245,9 @@ public class CloudEntityResourceMapper {
 
 		return event;
 	}
-	
+
 	protected CloudUsageEvent mapUsageEventResource(Map<String, Object> resource) {
-		CloudUsageEvent event = new CloudUsageEvent(
-			getMeta(resource),
-			getNameOfResource(resource));
+		CloudUsageEvent event = new CloudUsageEvent(getMeta(resource), getNameOfResource(resource));
 		event.setState(getEntityAttribute(resource, "state", CloudUsageEvent.AppState.class));
 		event.setMemoryInMBPerInstance(getEntityAttribute(resource, "memory_in_mb_per_instance", Integer.class));
 		event.setInstanceCount(getEntityAttribute(resource, "instance_count", Integer.class));
@@ -307,20 +302,19 @@ public class CloudEntityResourceMapper {
 
 	@SuppressWarnings("unchecked")
 	private CloudServiceBinding mapServiceBinding(Map<String, Object> resource) {
-		CloudServiceBinding binding = new CloudServiceBinding(getMeta(resource),
-			getNameOfResource(resource));
+		CloudServiceBinding binding = new CloudServiceBinding(getMeta(resource), getNameOfResource(resource));
 
 		binding.setAppGuid(UUID.fromString(getEntityAttribute(resource, "app_guid", String.class)));
 		binding.setSyslogDrainUrl(getEntityAttribute(resource, "syslog_drain_url", String.class));
 		binding.setCredentials(getEntityAttribute(resource, "credentials", Map.class));
 		binding.setBindingOptions(getEntityAttribute(resource, "binding_options", Map.class));
+		binding.setServiceInstance(getEntityAttribute(resource, "service_instance_guid", UUID.class));
 
 		return binding;
 	}
 
 	private CloudServiceOffering mapServiceOfferingResource(Map<String, Object> resource) {
-		CloudServiceOffering cloudServiceOffering = new CloudServiceOffering(
-				getMeta(resource),
+		CloudServiceOffering cloudServiceOffering = new CloudServiceOffering(getMeta(resource),
 				getEntityAttribute(resource, "label", String.class),
 				getEntityAttribute(resource, "provider", String.class),
 				getEntityAttribute(resource, "version", String.class),
@@ -346,34 +340,30 @@ public class CloudEntityResourceMapper {
 	private CloudServicePlan mapServicePlanResource(Map<String, Object> servicePlanResource) {
 		Boolean publicPlan = getEntityAttribute(servicePlanResource, "public", Boolean.class);
 
-		return new CloudServicePlan(
-				getMeta(servicePlanResource),
+		return new CloudServicePlan(getMeta(servicePlanResource),
 				getEntityAttribute(servicePlanResource, "name", String.class),
 				getEntityAttribute(servicePlanResource, "description", String.class),
-				getEntityAttribute(servicePlanResource, "free", Boolean.class),
-				publicPlan == null ? true : publicPlan,
+				getEntityAttribute(servicePlanResource, "free", Boolean.class), publicPlan == null ? true : publicPlan,
 				getEntityAttribute(servicePlanResource, "extra", String.class),
 				getEntityAttribute(servicePlanResource, "unique_id", String.class));
 	}
 
 	private CloudServiceBroker mapServiceBrokerResource(Map<String, Object> resource) {
-		return new CloudServiceBroker(getMeta(resource),
-			getEntityAttribute(resource, "name", String.class),
-			getEntityAttribute(resource, "broker_url", String.class),
-			getEntityAttribute(resource, "auth_username", String.class));
+		return new CloudServiceBroker(getMeta(resource), getEntityAttribute(resource, "name", String.class),
+				getEntityAttribute(resource, "broker_url", String.class),
+				getEntityAttribute(resource, "auth_username", String.class));
 	}
-	
+
 	protected CloudServiceUsageEvent mapServiceUsageEventResource(Map<String, Object> resource) {
-		CloudServiceUsageEvent event = new CloudServiceUsageEvent(
-			getMeta(resource),
-			getNameOfResource(resource));
+		CloudServiceUsageEvent event = new CloudServiceUsageEvent(getMeta(resource), getNameOfResource(resource));
 		event.setState(getEntityAttribute(resource, "state", CloudServiceUsageEvent.ServiceState.class));
 		event.setOrgGUID(getEntityAttribute(resource, "org_guid", UUID.class));
 		event.setSpaceGUID(getEntityAttribute(resource, "space_guid", UUID.class));
 		event.setSpaceName(getEntityAttribute(resource, "space_name", String.class));
 		event.setServiceInstanceGUID(getEntityAttribute(resource, "service_instance_guid", UUID.class));
 		event.setServiceInstanceName(getEntityAttribute(resource, "service_instance_name", String.class));
-		event.setServiceInstanceType(getEntityAttribute(resource, "service_instance_type", CloudServiceUsageEvent.ServiceInstanceType.class));
+		event.setServiceInstanceType(getEntityAttribute(resource, "service_instance_type",
+				CloudServiceUsageEvent.ServiceInstanceType.class));
 		event.setServicePlanGUID(getEntityAttribute(resource, "service_plan_guid", UUID.class));
 		event.setServicePlanName(getEntityAttribute(resource, "service_plan_name", String.class));
 		event.setServiceGUID(getEntityAttribute(resource, "service_guid", UUID.class));
@@ -383,30 +373,23 @@ public class CloudEntityResourceMapper {
 	}
 
 	private CloudStack mapStackResource(Map<String, Object> resource) {
-		return new CloudStack(getMeta(resource),
-				getNameOfResource(resource),
+		return new CloudStack(getMeta(resource), getNameOfResource(resource),
 				getEntityAttribute(resource, "description", String.class));
 	}
 
 	private CloudSecurityGroup mapApplicationSecurityGroupResource(Map<String, Object> resource) {
-		return new CloudSecurityGroup(getMeta(resource),
-				getNameOfResource(resource),
-				getSecurityGroupRules(resource),
+		return new CloudSecurityGroup(getMeta(resource), getNameOfResource(resource), getSecurityGroupRules(resource),
 				getEntityAttribute(resource, "running_default", Boolean.class),
 				getEntityAttribute(resource, "staging_default", Boolean.class));
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private List<SecurityGroupRule> getSecurityGroupRules(Map<String, Object> resource){
+	private List<SecurityGroupRule> getSecurityGroupRules(Map<String, Object> resource) {
 		List<SecurityGroupRule> rules = new ArrayList<SecurityGroupRule>();
 		List<Map<String, Object>> jsonRules = getEntityAttribute(resource, "rules", List.class);
-		for(Map<String, Object> jsonRule : jsonRules){
-			rules.add(new SecurityGroupRule(
-					(String) jsonRule.get("protocol"), 
-					(String) jsonRule.get("ports"), 
-					(String) jsonRule.get("destination"), 
-					(Boolean) jsonRule.get("log"), 
-					(Integer) jsonRule.get("type"), 
+		for (Map<String, Object> jsonRule : jsonRules) {
+			rules.add(new SecurityGroupRule((String) jsonRule.get("protocol"), (String) jsonRule.get("ports"),
+					(String) jsonRule.get("destination"), (Boolean) jsonRule.get("log"), (Integer) jsonRule.get("type"),
 					(Integer) jsonRule.get("code")));
 		}
 		return rules;
@@ -444,11 +427,13 @@ public class CloudEntityResourceMapper {
 	private static Date parseDate(String dateString) {
 		if (dateString != null) {
 			try {
-				// if the time zone part of the dateString contains a colon (e.g. 2013-09-19T21:56:36+00:00)
+				// if the time zone part of the dateString contains a colon
+				// (e.g. 2013-09-19T21:56:36+00:00)
 				// then remove it before parsing
 				String isoDateString = dateString.replaceFirst(":(?=[0-9]{2}$)", "").replaceFirst("Z$", "+0000");
 				return dateFormatter.parse(isoDateString);
-			} catch (Exception ignore) {}
+			} catch (Exception ignore) {
+			}
 		}
 		return null;
 	}
@@ -474,20 +459,21 @@ public class CloudEntityResourceMapper {
 		if (targetClass == Long.class) {
 			return (T) Long.valueOf(String.valueOf(attributeValue));
 		}
-		if (targetClass == Integer.class || targetClass == Boolean.class || targetClass == Map.class || targetClass == List.class) {
+		if (targetClass == Integer.class || targetClass == Boolean.class || targetClass == Map.class
+				|| targetClass == List.class) {
 			return (T) attributeValue;
 		}
 		if (targetClass == UUID.class && attributeValue instanceof String) {
-			return (T) UUID.fromString((String)attributeValue);
+			return (T) UUID.fromString((String) attributeValue);
 		}
 		if (targetClass == CloudUsageEvent.AppState.class && attributeValue instanceof String) {
-			return (T) CloudUsageEvent.AppState.valueOfWithDefault((String)attributeValue);
+			return (T) CloudUsageEvent.AppState.valueOfWithDefault((String) attributeValue);
 		}
 		if (targetClass == CloudServiceUsageEvent.ServiceState.class && attributeValue instanceof String) {
-			return (T) CloudServiceUsageEvent.ServiceState.valueOfWithDefault((String)attributeValue);
+			return (T) CloudServiceUsageEvent.ServiceState.valueOfWithDefault((String) attributeValue);
 		}
 		if (targetClass == CloudServiceUsageEvent.ServiceInstanceType.class && attributeValue instanceof String) {
-			return (T) CloudServiceUsageEvent.ServiceInstanceType.valueOfWithDefault((String)attributeValue);
+			return (T) CloudServiceUsageEvent.ServiceInstanceType.valueOfWithDefault((String) attributeValue);
 		}
 		throw new IllegalArgumentException(
 				"Error during mapping - unsupported class for attribute mapping " + targetClass.getName());
@@ -500,7 +486,8 @@ public class CloudEntityResourceMapper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Map<String, Object>> getEmbeddedResourceList(Map<String, Object> resource, String embeddedResourceName) {
+	public static List<Map<String, Object>> getEmbeddedResourceList(Map<String, Object> resource,
+			String embeddedResourceName) {
 		return (List<Map<String, Object>>) resource.get(embeddedResourceName);
 	}
 }

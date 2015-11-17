@@ -35,14 +35,15 @@ import org.cloudfoundry.client.lib.archive.ApplicationArchive;
 import org.cloudfoundry.client.lib.domain.ApplicationLog;
 import org.cloudfoundry.client.lib.domain.ApplicationStats;
 import org.cloudfoundry.client.lib.domain.CloudApplication;
-import org.cloudfoundry.client.lib.domain.CloudSecurityGroup;
 import org.cloudfoundry.client.lib.domain.CloudDomain;
 import org.cloudfoundry.client.lib.domain.CloudEvent;
 import org.cloudfoundry.client.lib.domain.CloudInfo;
 import org.cloudfoundry.client.lib.domain.CloudOrganization;
 import org.cloudfoundry.client.lib.domain.CloudQuota;
 import org.cloudfoundry.client.lib.domain.CloudRoute;
+import org.cloudfoundry.client.lib.domain.CloudSecurityGroup;
 import org.cloudfoundry.client.lib.domain.CloudService;
+import org.cloudfoundry.client.lib.domain.CloudServiceBinding;
 import org.cloudfoundry.client.lib.domain.CloudServiceBroker;
 import org.cloudfoundry.client.lib.domain.CloudServiceInstance;
 import org.cloudfoundry.client.lib.domain.CloudServiceOffering;
@@ -51,15 +52,16 @@ import org.cloudfoundry.client.lib.domain.CloudServiceUsageEvent;
 import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
 import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
+import org.cloudfoundry.client.lib.domain.CloudUser;
 import org.cloudfoundry.client.lib.domain.CrashesInfo;
 import org.cloudfoundry.client.lib.domain.InstancesInfo;
 import org.cloudfoundry.client.lib.domain.Staging;
-import org.cloudfoundry.client.lib.domain.CloudUser;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.client.ResponseErrorHandler;
 
 /**
- * Interface defining operations available for the cloud controller REST client implementations
+ * Interface defining operations available for the cloud controller REST client
+ * implementations
  *
  * @author Thomas Risberg
  */
@@ -102,7 +104,7 @@ public interface CloudControllerClient {
 	CloudService getService(String service);
 
 	CloudServiceInstance getServiceInstance(String serviceName);
-	
+
 	CloudServiceInstance getServiceInstance(UUID serviceGuid);
 
 	void deleteService(String service);
@@ -113,17 +115,17 @@ public interface CloudControllerClient {
 
 	List<CloudServiceBroker> getServiceBrokers();
 
-    CloudServiceBroker getServiceBroker(String name);
+	CloudServiceBroker getServiceBroker(String name);
 
-    void createServiceBroker(CloudServiceBroker serviceBroker);
+	void createServiceBroker(CloudServiceBroker serviceBroker);
 
-    void updateServiceBroker(CloudServiceBroker serviceBroker);
+	void updateServiceBroker(CloudServiceBroker serviceBroker);
 
-    void deleteServiceBroker(String name);
+	void deleteServiceBroker(String name);
 
-    void updateServicePlanVisibilityForBroker(String name, boolean visibility);
+	void updateServicePlanVisibilityForBroker(String name, boolean visibility);
 
-    // App methods
+	// App methods
 
 	List<CloudApplication> getApplications();
 
@@ -137,17 +139,19 @@ public interface CloudControllerClient {
 
 	Map<String, Object> getApplicationEnvironment(String appName);
 
-    void createApplication(String appName, Staging staging, Integer memory, List<String> uris,
-	                       List<String> serviceNames);
+	void createApplication(String appName, Staging staging, Integer memory, List<String> uris,
+			List<String> serviceNames);
 
-	void createApplication(String appName, Staging staging, Integer disk, Integer memory,
-	                       List<String> uris, List<String> serviceNames);
+	void createApplication(String appName, Staging staging, Integer disk, Integer memory, List<String> uris,
+			List<String> serviceNames);
 
 	void uploadApplication(String appName, File file, UploadStatusCallback callback) throws IOException;
 
-	void uploadApplication(String appName, String fileName, InputStream inputStream, UploadStatusCallback callback) throws IOException;
+	void uploadApplication(String appName, String fileName, InputStream inputStream, UploadStatusCallback callback)
+			throws IOException;
 
-	void uploadApplication(String appName, ApplicationArchive archive, UploadStatusCallback callback) throws IOException;
+	void uploadApplication(String appName, ApplicationArchive archive, UploadStatusCallback callback)
+			throws IOException;
 
 	StartingInfo startApplication(String appName);
 
@@ -221,7 +225,6 @@ public interface CloudControllerClient {
 
 	// Domains and routes management
 
-
 	List<CloudDomain> getDomainsForOrg();
 
 	List<CloudDomain> getDomains();
@@ -254,7 +257,7 @@ public interface CloudControllerClient {
 
 	// Quota operations
 	CloudOrganization getOrgByName(String orgName, boolean required);
-	
+
 	CloudOrganization getOrgByGuid(UUID orgGuid, boolean required);
 
 	List<CloudQuota> getQuotas();
@@ -321,12 +324,15 @@ public interface CloudControllerClient {
 
 	List<CloudUsageEvent> getApplicationUsageEventsAfter(UUID after);
 
-	List<CloudServiceUsageEvent>  getServiceUsageEvents();
+	List<CloudServiceUsageEvent> getServiceUsageEvents();
 
 	List<CloudServiceUsageEvent> getServiceUsageEventsAfter(UUID after);
 
 	CloudServicePlan getServicePlan(UUID servicePlanGuid);
 
+	CloudServiceBinding getServiceBinding(UUID guid);
 
+	void unbindService(UUID appGuid, UUID serviceInstanceGuid);
 
+	void bindService(UUID appGuid, UUID serviceId);
 }

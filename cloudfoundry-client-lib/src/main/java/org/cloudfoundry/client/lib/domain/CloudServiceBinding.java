@@ -13,6 +13,7 @@ public class CloudServiceBinding extends CloudEntity {
 	private Map<String, Object> credentials;
 	private Map<String, Object> bindingOptions;
 	private String syslogDrainUrl;
+	private UUID serviceInstanceGuid;
 
 	public CloudServiceBinding() {
 		super();
@@ -52,5 +53,13 @@ public class CloudServiceBinding extends CloudEntity {
 
 	public void setSyslogDrainUrl(String syslogDrainUrl) {
 		this.syslogDrainUrl = syslogDrainUrl;
+	}
+
+	public UUID getServiceInstance() {
+		return serviceInstanceGuid;
+	}
+
+	public void setServiceInstance(UUID serviceInstanceGuid) {
+		this.serviceInstanceGuid = serviceInstanceGuid;
 	}
 }

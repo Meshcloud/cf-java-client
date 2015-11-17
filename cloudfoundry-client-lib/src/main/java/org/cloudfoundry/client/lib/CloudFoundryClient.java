@@ -29,14 +29,15 @@ import org.cloudfoundry.client.lib.domain.ApplicationLog;
 import org.cloudfoundry.client.lib.domain.ApplicationStats;
 import org.cloudfoundry.client.lib.domain.CloudApplication;
 import org.cloudfoundry.client.lib.domain.CloudApplication.DebugMode;
-import org.cloudfoundry.client.lib.domain.CloudSecurityGroup;
 import org.cloudfoundry.client.lib.domain.CloudDomain;
 import org.cloudfoundry.client.lib.domain.CloudEvent;
 import org.cloudfoundry.client.lib.domain.CloudInfo;
 import org.cloudfoundry.client.lib.domain.CloudOrganization;
 import org.cloudfoundry.client.lib.domain.CloudQuota;
 import org.cloudfoundry.client.lib.domain.CloudRoute;
+import org.cloudfoundry.client.lib.domain.CloudSecurityGroup;
 import org.cloudfoundry.client.lib.domain.CloudService;
+import org.cloudfoundry.client.lib.domain.CloudServiceBinding;
 import org.cloudfoundry.client.lib.domain.CloudServiceBroker;
 import org.cloudfoundry.client.lib.domain.CloudServiceInstance;
 import org.cloudfoundry.client.lib.domain.CloudServiceOffering;
@@ -45,10 +46,10 @@ import org.cloudfoundry.client.lib.domain.CloudServiceUsageEvent;
 import org.cloudfoundry.client.lib.domain.CloudSpace;
 import org.cloudfoundry.client.lib.domain.CloudStack;
 import org.cloudfoundry.client.lib.domain.CloudUsageEvent;
+import org.cloudfoundry.client.lib.domain.CloudUser;
 import org.cloudfoundry.client.lib.domain.CrashesInfo;
 import org.cloudfoundry.client.lib.domain.InstancesInfo;
 import org.cloudfoundry.client.lib.domain.Staging;
-import org.cloudfoundry.client.lib.domain.CloudUser;
 import org.cloudfoundry.client.lib.rest.CloudControllerClient;
 import org.cloudfoundry.client.lib.rest.CloudControllerClientFactory;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -72,7 +73,8 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 	private CloudInfo info;
 
 	/**
-	 * Construct client for anonymous user. Useful only to get to the '/info' endpoint.
+	 * Construct client for anonymous user. Useful only to get to the '/info'
+	 * endpoint.
 	 */
 
 	public CloudFoundryClient(URL cloudControllerUrl) {
@@ -88,7 +90,7 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 	}
 
 	public CloudFoundryClient(URL cloudControllerUrl, HttpProxyConfiguration httpProxyConfiguration,
-	                          boolean trustSelfSignedCerts) {
+			boolean trustSelfSignedCerts) {
 		this(null, cloudControllerUrl, null, httpProxyConfiguration, trustSelfSignedCerts);
 	}
 
@@ -100,18 +102,17 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 		this(credentials, cloudControllerUrl, null, (HttpProxyConfiguration) null, false);
 	}
 
-	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl,
-	                          boolean trustSelfSignedCerts) {
+	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, boolean trustSelfSignedCerts) {
 		this(credentials, cloudControllerUrl, null, (HttpProxyConfiguration) null, trustSelfSignedCerts);
 	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl,
-	                          HttpProxyConfiguration httpProxyConfiguration) {
+			HttpProxyConfiguration httpProxyConfiguration) {
 		this(credentials, cloudControllerUrl, null, httpProxyConfiguration, false);
 	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl,
-	                          HttpProxyConfiguration httpProxyConfiguration, boolean trustSelfSignedCerts) {
+			HttpProxyConfiguration httpProxyConfiguration, boolean trustSelfSignedCerts) {
 		this(credentials, cloudControllerUrl, null, httpProxyConfiguration, trustSelfSignedCerts);
 	}
 
@@ -121,23 +122,23 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, CloudSpace sessionSpace) {
 		this(credentials, cloudControllerUrl, sessionSpace, null, false);
-    }
+	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, CloudSpace sessionSpace,
-	                          boolean trustSelfSignedCerts) {
+			boolean trustSelfSignedCerts) {
 		this(credentials, cloudControllerUrl, sessionSpace, null, trustSelfSignedCerts);
 	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, CloudSpace sessionSpace,
-	                          HttpProxyConfiguration httpProxyConfiguration) {
+			HttpProxyConfiguration httpProxyConfiguration) {
 		this(credentials, cloudControllerUrl, sessionSpace, httpProxyConfiguration, false);
 	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, CloudSpace sessionSpace,
-	                          HttpProxyConfiguration httpProxyConfiguration, boolean trustSelfSignedCerts) {
+			HttpProxyConfiguration httpProxyConfiguration, boolean trustSelfSignedCerts) {
 		Assert.notNull(cloudControllerUrl, "URL for cloud controller cannot be null");
-		CloudControllerClientFactory cloudControllerClientFactory =
-				new CloudControllerClientFactory(httpProxyConfiguration, trustSelfSignedCerts);
+		CloudControllerClientFactory cloudControllerClientFactory = new CloudControllerClientFactory(
+				httpProxyConfiguration, trustSelfSignedCerts);
 		this.cc = cloudControllerClientFactory.newCloudController(cloudControllerUrl, credentials, sessionSpace);
 	}
 
@@ -150,20 +151,20 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, String orgName, String spaceName,
-	                          boolean trustSelfSignedCerts) {
+			boolean trustSelfSignedCerts) {
 		this(credentials, cloudControllerUrl, orgName, spaceName, null, trustSelfSignedCerts);
 	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, String orgName, String spaceName,
-							  HttpProxyConfiguration httpProxyConfiguration) {
+			HttpProxyConfiguration httpProxyConfiguration) {
 		this(credentials, cloudControllerUrl, orgName, spaceName, httpProxyConfiguration, false);
 	}
 
 	public CloudFoundryClient(CloudCredentials credentials, URL cloudControllerUrl, String orgName, String spaceName,
-	                          HttpProxyConfiguration httpProxyConfiguration, boolean trustSelfSignedCerts) {
+			HttpProxyConfiguration httpProxyConfiguration, boolean trustSelfSignedCerts) {
 		Assert.notNull(cloudControllerUrl, "URL for cloud controller cannot be null");
-		CloudControllerClientFactory cloudControllerClientFactory =
-				new CloudControllerClientFactory(httpProxyConfiguration, trustSelfSignedCerts);
+		CloudControllerClientFactory cloudControllerClientFactory = new CloudControllerClientFactory(
+				httpProxyConfiguration, trustSelfSignedCerts);
 		this.cc = cloudControllerClientFactory.newCloudController(cloudControllerUrl, credentials, orgName, spaceName);
 	}
 
@@ -174,14 +175,17 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 		this.cc = cc;
 	}
 
+	@Override
 	public void setResponseErrorHandler(ResponseErrorHandler errorHandler) {
 		cc.setResponseErrorHandler(errorHandler);
 	}
 
+	@Override
 	public URL getCloudControllerUrl() {
 		return cc.getCloudControllerUrl();
 	}
 
+	@Override
 	public CloudInfo getCloudInfo() {
 		if (info == null) {
 			info = cc.getInfo();
@@ -189,242 +193,303 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 		return info;
 	}
 
+	@Override
 	public List<CloudSpace> getSpaces() {
 		return cc.getSpaces();
 	}
 
+	@Override
 	public List<CloudOrganization> getOrganizations() {
 		return cc.getOrganizations();
 	}
 
+	@Override
 	public void register(String email, String password) {
 		cc.register(email, password);
 	}
 
+	@Override
 	public void updatePassword(String newPassword) {
 		cc.updatePassword(newPassword);
 	}
 
+	@Override
 	public void updatePassword(CloudCredentials credentials, String newPassword) {
 		cc.updatePassword(credentials, newPassword);
 	}
 
+	@Override
 	public void unregister() {
 		cc.unregister();
 	}
 
+	@Override
 	public OAuth2AccessToken login() {
 		return cc.login();
 	}
 
+	@Override
 	public void logout() {
 		cc.logout();
 	}
 
+	@Override
 	public List<CloudApplication> getApplications() {
 		return cc.getApplications();
 	}
 
+	@Override
 	public CloudApplication getApplication(String appName) {
 		return cc.getApplication(appName);
 	}
 
+	@Override
 	public CloudApplication getApplication(UUID appGuid) {
 		return cc.getApplication(appGuid);
 	}
 
+	@Override
 	public Map<String, Object> getApplicationEnvironment(UUID appGuid) {
 		return cc.getApplicationEnvironment(appGuid);
 	}
 
-   	public Map<String, Object> getApplicationEnvironment(String appName) {
-    	return cc.getApplicationEnvironment(appName);
+	@Override
+	public Map<String, Object> getApplicationEnvironment(String appName) {
+		return cc.getApplicationEnvironment(appName);
 	}
 
+	@Override
 	public ApplicationStats getApplicationStats(String appName) {
 		return cc.getApplicationStats(appName);
 	}
 
+	@Override
 	public void createApplication(String appName, Staging staging, Integer memory, List<String> uris,
-								  List<String> serviceNames) {
+			List<String> serviceNames) {
 		cc.createApplication(appName, staging, memory, uris, serviceNames);
 	}
 
+	@Override
 	public void createApplication(String appName, Staging staging, Integer disk, Integer memory, List<String> uris,
-								  List<String> serviceNames) {
+			List<String> serviceNames) {
 		cc.createApplication(appName, staging, disk, memory, uris, serviceNames);
 	}
 
+	@Override
 	public void createService(CloudService service) {
 		cc.createService(service);
 	}
 
+	@Override
 	public void createUserProvidedService(CloudService service, Map<String, Object> credentials) {
 		cc.createUserProvidedService(service, credentials);
 	}
 
-	public void createUserProvidedService(CloudService service, Map<String, Object> credentials, String syslogDrainUrl) {
+	@Override
+	public void createUserProvidedService(CloudService service, Map<String, Object> credentials,
+			String syslogDrainUrl) {
 		cc.createUserProvidedService(service, credentials, syslogDrainUrl);
 	}
 
 	@Override
 	public List<CloudRoute> deleteOrphanedRoutes() {
-    	return cc.deleteOrphanedRoutes();
+		return cc.deleteOrphanedRoutes();
 	}
 
+	@Override
 	public void uploadApplication(String appName, String file) throws IOException {
 		cc.uploadApplication(appName, new File(file), null);
 	}
 
+	@Override
 	public void uploadApplication(String appName, File file) throws IOException {
 		cc.uploadApplication(appName, file, null);
 	}
 
+	@Override
 	public void uploadApplication(String appName, File file, UploadStatusCallback callback) throws IOException {
 		cc.uploadApplication(appName, file, callback);
 	}
 
+	@Override
 	public void uploadApplication(String appName, String fileName, InputStream inputStream) throws IOException {
 		cc.uploadApplication(appName, fileName, inputStream, null);
 	}
 
-	public void uploadApplication(String appName, String fileName, InputStream inputStream, UploadStatusCallback callback) throws IOException {
+	@Override
+	public void uploadApplication(String appName, String fileName, InputStream inputStream,
+			UploadStatusCallback callback) throws IOException {
 		cc.uploadApplication(appName, fileName, inputStream, callback);
 	}
 
+	@Override
 	public void uploadApplication(String appName, ApplicationArchive archive) throws IOException {
 		cc.uploadApplication(appName, archive, null);
 	}
 
-	public void uploadApplication(String appName, ApplicationArchive archive, UploadStatusCallback callback) throws IOException {
+	@Override
+	public void uploadApplication(String appName, ApplicationArchive archive, UploadStatusCallback callback)
+			throws IOException {
 		cc.uploadApplication(appName, archive, callback);
 	}
 
+	@Override
 	public StartingInfo startApplication(String appName) {
 		return cc.startApplication(appName);
 	}
 
+	@Override
 	public void debugApplication(String appName, DebugMode mode) {
 		cc.debugApplication(appName, mode);
 	}
 
+	@Override
 	public void stopApplication(String appName) {
 		cc.stopApplication(appName);
 	}
 
+	@Override
 	public StartingInfo restartApplication(String appName) {
 		return cc.restartApplication(appName);
 	}
 
+	@Override
 	public void deleteApplication(String appName) {
 		cc.deleteApplication(appName);
 	}
 
+	@Override
 	public void deleteAllApplications() {
 		cc.deleteAllApplications();
 	}
 
+	@Override
 	public void deleteAllServices() {
 		cc.deleteAllServices();
 	}
 
+	@Override
 	public void updateApplicationDiskQuota(String appName, int disk) {
 		cc.updateApplicationDiskQuota(appName, disk);
 	}
 
+	@Override
 	public void updateApplicationMemory(String appName, int memory) {
 		cc.updateApplicationMemory(appName, memory);
 	}
 
+	@Override
 	public void updateApplicationInstances(String appName, int instances) {
 		cc.updateApplicationInstances(appName, instances);
 	}
 
+	@Override
 	public void updateApplicationServices(String appName, List<String> services) {
 		cc.updateApplicationServices(appName, services);
 	}
 
+	@Override
 	public void updateApplicationStaging(String appName, Staging staging) {
 		cc.updateApplicationStaging(appName, staging);
 	}
 
+	@Override
 	public void updateApplicationUris(String appName, List<String> uris) {
 		cc.updateApplicationUris(appName, uris);
 	}
 
+	@Override
 	public void updateApplicationEnv(String appName, Map<String, String> env) {
 		cc.updateApplicationEnv(appName, env);
 	}
 
+	@Override
 	public void updateApplicationEnv(String appName, List<String> env) {
 		cc.updateApplicationEnv(appName, env);
 	}
 
+	@Override
 	public List<CloudEvent> getEvents() {
 		return cc.getEvents();
 	}
 
+	@Override
 	public List<CloudEvent> getApplicationEvents(String appName) {
 		return cc.getApplicationEvents(appName);
 	}
-	
+
+	@Override
 	public List<CloudUsageEvent> getApplicationUsageEvents() {
 		return cc.getApplicationUsageEvents();
 	}
-	
+
 	public List<CloudUsageEvent> getApplicationUsageEventsAfter(UUID after) {
 		return cc.getApplicationUsageEventsAfter(after);
 	}
 
 	/**
-	 * @deprecated use {@link #streamLogs(String, ApplicationLogListener)} or {@link #getRecentLogs(String)}
+	 * @deprecated use {@link #streamLogs(String, ApplicationLogListener)} or
+	 *             {@link #getRecentLogs(String)}
 	 */
+	@Deprecated
+	@Override
 	public Map<String, String> getLogs(String appName) {
 		return cc.getLogs(appName);
 	}
 
+	@Override
 	public StreamingLogToken streamLogs(String appName, ApplicationLogListener listener) {
-	    return cc.streamLogs(appName, listener);
+		return cc.streamLogs(appName, listener);
 	}
 
+	@Override
 	public List<ApplicationLog> getRecentLogs(String appName) {
 		return cc.getRecentLogs(appName);
 	}
 
 	/**
-	 * @deprecated use {@link #streamLogs(String, ApplicationLogListener)} or {@link #getRecentLogs(String)}
+	 * @deprecated use {@link #streamLogs(String, ApplicationLogListener)} or
+	 *             {@link #getRecentLogs(String)}
 	 */
+	@Deprecated
+	@Override
 	public Map<String, String> getCrashLogs(String appName) {
 		return cc.getCrashLogs(appName);
 	}
 
+	@Override
 	public String getStagingLogs(StartingInfo info, int offset) {
 		return cc.getStagingLogs(info, offset);
 	}
 
+	@Override
 	public String getFile(String appName, int instanceIndex, String filePath) {
 		return cc.getFile(appName, instanceIndex, filePath, 0, -1);
 	}
 
+	@Override
 	public String getFile(String appName, int instanceIndex, String filePath, int startPosition) {
 		Assert.isTrue(startPosition >= 0,
 				startPosition + " is not a valid value for start position, it should be 0 or greater.");
 		return cc.getFile(appName, instanceIndex, filePath, startPosition, -1);
 	}
 
+	@Override
 	public String getFile(String appName, int instanceIndex, String filePath, int startPosition, int endPosition) {
 		Assert.isTrue(startPosition >= 0,
 				startPosition + " is not a valid value for start position, it should be 0 or greater.");
 		Assert.isTrue(endPosition > startPosition,
-				endPosition + " is not a valid value for end position, it should be greater than startPosition " +
-						"which is " + startPosition + ".");
+				endPosition + " is not a valid value for end position, it should be greater than startPosition "
+						+ "which is " + startPosition + ".");
 		return cc.getFile(appName, instanceIndex, filePath, startPosition, endPosition - 1);
 	}
 
+	@Override
 	public void openFile(String appName, int instanceIndex, String filePath, ClientHttpResponseCallback callback) {
 		cc.openFile(appName, instanceIndex, filePath, callback);
 	}
 
+	@Override
 	public String getFileTail(String appName, int instanceIndex, String filePath, int length) {
 		Assert.isTrue(length > 0, length + " is not a valid value for length, it should be 1 or greater.");
 		return cc.getFile(appName, instanceIndex, filePath, -1, length);
@@ -432,22 +497,27 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 
 	// list services, un/provision services, modify instance
 
+	@Override
 	public List<CloudService> getServices() {
 		return cc.getServices();
 	}
 
+	@Override
 	public List<CloudServiceBroker> getServiceBrokers() {
 		return cc.getServiceBrokers();
 	}
 
+	@Override
 	public CloudServiceBroker getServiceBroker(String name) {
 		return cc.getServiceBroker(name);
 	}
 
+	@Override
 	public void createServiceBroker(CloudServiceBroker serviceBroker) {
 		cc.createServiceBroker(serviceBroker);
 	}
 
+	@Override
 	public void updateServiceBroker(CloudServiceBroker serviceBroker) {
 		cc.updateServiceBroker(serviceBroker);
 	}
@@ -462,153 +532,192 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 		cc.updateServicePlanVisibilityForBroker(name, visibility);
 	}
 
+	@Override
 	public CloudService getService(String service) {
 		return cc.getService(service);
 	}
 
-    public CloudServiceInstance getServiceInstance(String service) {
+	@Override
+	public CloudServiceInstance getServiceInstance(String service) {
 		return cc.getServiceInstance(service);
 	}
-    
-    public CloudServiceInstance getServiceInstance(UUID service) {
-		return cc.getServiceInstance(service);
-	}
-    
-    public CloudServicePlan getServicePlan(UUID servicePlan) {
-    	return cc.getServicePlan(servicePlan);
-    }
 
+	public CloudServiceInstance getServiceInstance(UUID service) {
+		return cc.getServiceInstance(service);
+	}
+
+	public CloudServicePlan getServicePlan(UUID servicePlan) {
+		return cc.getServicePlan(servicePlan);
+	}
+
+	@Override
 	public void deleteService(String service) {
 		cc.deleteService(service);
 	}
 
+	@Override
 	public List<CloudServiceOffering> getServiceOfferings() {
 		return cc.getServiceOfferings();
 	}
 
+	@Override
 	public void bindService(String appName, String serviceName) {
 		cc.bindService(appName, serviceName);
 	}
 
+	@Override
 	public void unbindService(String appName, String serviceName) {
 		cc.unbindService(appName, serviceName);
 	}
-	
+
+	@Override
+	public void unbindService(UUID appGuid, UUID serviceInstanceGuid) {
+		cc.unbindService(appGuid, serviceInstanceGuid);
+	}
+
+	@Override
 	public List<CloudServiceUsageEvent> getServiceUsageEvents() {
 		return cc.getServiceUsageEvents();
 	}
-	
+
 	public List<CloudServiceUsageEvent> getServiceUsageEventsAfter(UUID after) {
 		return cc.getServiceUsageEventsAfter(after);
 	}
 
+	@Override
 	public InstancesInfo getApplicationInstances(String appName) {
 		return cc.getApplicationInstances(appName);
 	}
 
+	@Override
 	public InstancesInfo getApplicationInstances(CloudApplication app) {
 		return cc.getApplicationInstances(app);
 	}
 
+	@Override
 	public CrashesInfo getCrashes(String appName) {
 		return cc.getCrashes(appName);
 	}
 
+	@Override
 	public List<CloudStack> getStacks() {
 		return cc.getStacks();
 	}
 
+	@Override
 	public CloudStack getStack(String name) {
 		return cc.getStack(name);
 	}
 
+	@Override
 	public void rename(String appName, String newName) {
 		cc.rename(appName, newName);
 	}
 
+	@Override
 	public List<CloudDomain> getDomainsForOrg() {
 		return cc.getDomainsForOrg();
 	}
 
+	@Override
 	public List<CloudDomain> getPrivateDomains() {
 		return cc.getPrivateDomains();
 	}
 
+	@Override
 	public List<CloudDomain> getSharedDomains() {
 		return cc.getSharedDomains();
 	}
 
+	@Override
 	public List<CloudDomain> getDomains() {
 		return cc.getDomains();
 	}
 
+	@Override
 	public CloudDomain getDefaultDomain() {
 		return cc.getDefaultDomain();
 	}
 
+	@Override
 	public void addDomain(String domainName) {
 		cc.addDomain(domainName);
 	}
 
+	@Override
 	public void deleteDomain(String domainName) {
 		cc.deleteDomain(domainName);
 	}
 
+	@Override
 	public void removeDomain(String domainName) {
 		cc.removeDomain(domainName);
 	}
 
+	@Override
 	public List<CloudRoute> getRoutes(String domainName) {
 		return cc.getRoutes(domainName);
 	}
 
+	@Override
 	public void addRoute(String host, String domainName) {
 		cc.addRoute(host, domainName);
 	}
 
+	@Override
 	public void deleteRoute(String host, String domainName) {
 		cc.deleteRoute(host, domainName);
 	}
 
+	@Override
 	public void registerRestLogListener(RestLogCallback callBack) {
 		cc.registerRestLogListener(callBack);
 	}
 
+	@Override
 	public void unRegisterRestLogListener(RestLogCallback callBack) {
 		cc.unRegisterRestLogListener(callBack);
 	}
 
-	public CloudOrganization getOrgByName(String orgName, boolean required){
-    	return cc.getOrgByName(orgName, required);
-    }
-	
-	public CloudOrganization getOrgByGuid(UUID orgGuid, boolean required){
-    	return cc.getOrgByGuid(orgGuid, required);
-    }
+	@Override
+	public CloudOrganization getOrgByName(String orgName, boolean required) {
+		return cc.getOrgByName(orgName, required);
+	}
 
+	public CloudOrganization getOrgByGuid(UUID orgGuid, boolean required) {
+		return cc.getOrgByGuid(orgGuid, required);
+	}
+
+	@Override
 	public List<CloudQuota> getQuotas() {
 		return cc.getQuotas();
 	}
 
+	@Override
 	public CloudQuota getQuotaByName(String quotaName, boolean required) {
 		return cc.getQuotaByName(quotaName, required);
 	}
 
+	@Override
 	public void setQuotaToOrg(String orgName, String quotaName) {
 		cc.setQuotaToOrg(orgName, quotaName);
 	}
 
+	@Override
 	public void createQuota(CloudQuota quota) {
 		cc.createQuota(quota);
 	}
 
+	@Override
 	public void deleteQuota(String quotaName) {
 		cc.deleteQuota(quotaName);
 	}
 
+	@Override
 	public void updateQuota(CloudQuota quota, String name) {
 		cc.updateQuota(quota, name);
 	}
+
 	@Override
 	public void createSpace(String spaceName) {
 		cc.createSpace(spaceName);
@@ -618,7 +727,6 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 	public void deleteSpace(String spaceName) {
 		cc.deleteSpace(spaceName);
 	}
-
 
 	@Override
 	public CloudSpace getSpace(String spaceName) {
@@ -685,7 +793,6 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 		cc.associateAuditorWithSpace(orgName, spaceName, null);
 	}
 
-
 	@Override
 	public void associateManagerWithSpace(String orgName, String spaceName, String userGuid) {
 		cc.associateManagerWithSpace(orgName, spaceName, userGuid);
@@ -712,7 +819,7 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 	}
 
 	@Override
-	public void createSecurityGroup(CloudSecurityGroup securityGroup){
+	public void createSecurityGroup(CloudSecurityGroup securityGroup) {
 		cc.createSecurityGroup(securityGroup);
 	}
 
@@ -785,4 +892,13 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 	public List<CloudSpace> getSpacesBoundToSecurityGroup(String securityGroupName) {
 		return cc.getSpacesBoundToSecurityGroup(securityGroupName);
 	}
+
+	public CloudServiceBinding getServiceBinding(UUID guid) {
+		return cc.getServiceBinding(guid);
+	}
+
+	public void bindService(UUID appGuid, UUID serviceId) {
+		cc.bindService(appGuid, serviceId);
+	}
+
 }
