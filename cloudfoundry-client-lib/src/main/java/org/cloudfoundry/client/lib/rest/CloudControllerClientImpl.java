@@ -2811,4 +2811,10 @@ public class CloudControllerClientImpl implements CloudControllerClient {
 	public CloudServiceBinding getServiceBinding(UUID guid) {
 		return doGetServiceBinding(guid);
 	}
+
+	@Override
+	public void bindService(UUID appGuid, UUID serviceId) {
+		// TODO Auto-generated method stub
+
+	}
 }

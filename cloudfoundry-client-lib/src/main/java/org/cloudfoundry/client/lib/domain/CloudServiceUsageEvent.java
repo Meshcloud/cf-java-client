@@ -3,23 +3,21 @@
  */
 package org.cloudfoundry.client.lib.domain;
 
-import java.util.UUID;
-
 /**
  * @author Christian Brinker, evoila.
  *
  */
 public class CloudServiceUsageEvent extends CloudEntity {
 	private ServiceState state;
-	private UUID orgGUID;
-	private UUID spaceGUID;
+	private String orgGUID;
+	private String spaceGUID;
 	private String spaceName;
-	private UUID serviceInstanceGUID;
+	private String serviceInstanceGUID;
 	private String serviceInstanceName;
 	private ServiceInstanceType serviceInstanceType;
-	private UUID servicePlanGUID;
+	private String servicePlanGUID;
 	private String servicePlanName;
-	private UUID serviceGUID;
+	private String serviceGUID;
 	private String serviceLabel;
 
 	public CloudServiceUsageEvent(Meta meta, String name) {
@@ -58,19 +56,19 @@ public class CloudServiceUsageEvent extends CloudEntity {
 		this.state = state;
 	}
 
-	public UUID getOrgGUID() {
+	public String getOrgGUID() {
 		return orgGUID;
 	}
 
-	public void setOrgGUID(UUID orgGUID) {
+	public void setOrgGUID(String orgGUID) {
 		this.orgGUID = orgGUID;
 	}
 
-	public UUID getSpaceGUID() {
+	public String getSpaceGUID() {
 		return spaceGUID;
 	}
 
-	public void setSpaceGUID(UUID spaceGUID) {
+	public void setSpaceGUID(String spaceGUID) {
 		this.spaceGUID = spaceGUID;
 	}
 
@@ -82,11 +80,11 @@ public class CloudServiceUsageEvent extends CloudEntity {
 		this.spaceName = spaceName;
 	}
 
-	public UUID getServiceInstanceGUID() {
+	public String getServiceInstanceGUID() {
 		return serviceInstanceGUID;
 	}
 
-	public void setServiceInstanceGUID(UUID serviceInstanceGUID) {
+	public void setServiceInstanceGUID(String serviceInstanceGUID) {
 		this.serviceInstanceGUID = serviceInstanceGUID;
 	}
 
@@ -106,11 +104,11 @@ public class CloudServiceUsageEvent extends CloudEntity {
 		this.serviceInstanceType = serviceInstanceType;
 	}
 
-	public UUID getServicePlanGUID() {
+	public String getServicePlanGUID() {
 		return servicePlanGUID;
 	}
 
-	public void setServicePlanGUID(UUID servicePlanGUID) {
+	public void setServicePlanGUID(String servicePlanGUID) {
 		this.servicePlanGUID = servicePlanGUID;
 	}
 
@@ -122,11 +120,11 @@ public class CloudServiceUsageEvent extends CloudEntity {
 		this.servicePlanName = servicePlanName;
 	}
 
-	public UUID getServiceGUID() {
+	public String getServiceGUID() {
 		return serviceGUID;
 	}
 
-	public void setServiceGUID(UUID serviceGUID) {
+	public void setServiceGUID(String serviceGUID) {
 		this.serviceGUID = serviceGUID;
 	}
 

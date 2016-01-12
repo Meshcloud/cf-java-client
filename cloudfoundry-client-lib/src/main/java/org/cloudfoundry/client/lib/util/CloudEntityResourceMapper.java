@@ -251,10 +251,10 @@ public class CloudEntityResourceMapper {
 		event.setState(getEntityAttribute(resource, "state", CloudUsageEvent.AppState.class));
 		event.setMemoryInMBPerInstance(getEntityAttribute(resource, "memory_in_mb_per_instance", Integer.class));
 		event.setInstanceCount(getEntityAttribute(resource, "instance_count", Integer.class));
-		event.setAppGUID(getEntityAttribute(resource, "app_guid", UUID.class));
+		event.setAppGUID(getEntityAttribute(resource, "app_guid", String.class));
 		event.setAppName(getEntityAttribute(resource, "app_name", String.class));
-		event.setOrgGUID(getEntityAttribute(resource, "org_guid", UUID.class));
-		event.setSpaceGUID(getEntityAttribute(resource, "space_guid", UUID.class));
+		event.setOrgGUID(getEntityAttribute(resource, "org_guid", String.class));
+		event.setSpaceGUID(getEntityAttribute(resource, "space_guid", String.class));
 		event.setSpaceName(getEntityAttribute(resource, "space_name", String.class));
 
 		return event;
@@ -357,16 +357,16 @@ public class CloudEntityResourceMapper {
 	protected CloudServiceUsageEvent mapServiceUsageEventResource(Map<String, Object> resource) {
 		CloudServiceUsageEvent event = new CloudServiceUsageEvent(getMeta(resource), getNameOfResource(resource));
 		event.setState(getEntityAttribute(resource, "state", CloudServiceUsageEvent.ServiceState.class));
-		event.setOrgGUID(getEntityAttribute(resource, "org_guid", UUID.class));
-		event.setSpaceGUID(getEntityAttribute(resource, "space_guid", UUID.class));
+		event.setOrgGUID(getEntityAttribute(resource, "org_guid", String.class));
+		event.setSpaceGUID(getEntityAttribute(resource, "space_guid", String.class));
 		event.setSpaceName(getEntityAttribute(resource, "space_name", String.class));
-		event.setServiceInstanceGUID(getEntityAttribute(resource, "service_instance_guid", UUID.class));
+		event.setServiceInstanceGUID(getEntityAttribute(resource, "service_instance_guid", String.class));
 		event.setServiceInstanceName(getEntityAttribute(resource, "service_instance_name", String.class));
 		event.setServiceInstanceType(getEntityAttribute(resource, "service_instance_type",
 				CloudServiceUsageEvent.ServiceInstanceType.class));
-		event.setServicePlanGUID(getEntityAttribute(resource, "service_plan_guid", UUID.class));
+		event.setServicePlanGUID(getEntityAttribute(resource, "service_plan_guid", String.class));
 		event.setServicePlanName(getEntityAttribute(resource, "service_plan_name", String.class));
-		event.setServiceGUID(getEntityAttribute(resource, "service_guid", UUID.class));
+		event.setServiceGUID(getEntityAttribute(resource, "service_guid", String.class));
 		event.setServiceLabel(getEntityAttribute(resource, "service_label", String.class));
 
 		return event;

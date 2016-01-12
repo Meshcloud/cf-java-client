@@ -3,9 +3,6 @@
  */
 package org.cloudfoundry.client.lib.domain;
 
-import java.util.UUID;
-
-import org.cloudfoundry.client.lib.domain.CloudApplication.AppState;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 
@@ -14,23 +11,23 @@ import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
  *
  */
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, creatorVisibility = Visibility.NONE)
-public class CloudUsageEvent extends CloudEntity{
+public class CloudUsageEvent extends CloudEntity {
 	private AppState state;
 	private int memoryInMBPerInstance;
 	private int instanceCount;
-	private UUID appGUID;
+	private String appGUID;
 	private String appName;
-	private UUID spaceGUID;
+	private String spaceGUID;
 	private String spaceName;
-	private UUID orgGUID;
-	
+	private String orgGUID;
+
 	public CloudUsageEvent(Meta meta, String name) {
 		super(meta, name);
 	}
-	
+
 	public enum AppState {
 		BUILDPACK_SET, STARTED, STOPPED, UNKNOWN;
-		
+
 		public static AppState valueOfWithDefault(String s) {
 			try {
 				return AppState.valueOf(s);
@@ -64,11 +61,11 @@ public class CloudUsageEvent extends CloudEntity{
 		this.instanceCount = instanceCount;
 	}
 
-	public UUID getAppGUID() {
+	public String getAppGUID() {
 		return appGUID;
 	}
 
-	public void setAppGUID(UUID appGUID) {
+	public void setAppGUID(String appGUID) {
 		this.appGUID = appGUID;
 	}
 
@@ -80,11 +77,11 @@ public class CloudUsageEvent extends CloudEntity{
 		this.appName = appName;
 	}
 
-	public UUID getSpaceGUID() {
+	public String getSpaceGUID() {
 		return spaceGUID;
 	}
 
-	public void setSpaceGUID(UUID spaceGUID) {
+	public void setSpaceGUID(String spaceGUID) {
 		this.spaceGUID = spaceGUID;
 	}
 
@@ -96,11 +93,11 @@ public class CloudUsageEvent extends CloudEntity{
 		this.spaceName = spaceName;
 	}
 
-	public UUID getOrgGUID() {
+	public String getOrgGUID() {
 		return orgGUID;
 	}
 
-	public void setOrgGUID(UUID orgGUID) {
+	public void setOrgGUID(String orgGUID) {
 		this.orgGUID = orgGUID;
 	}
 }
