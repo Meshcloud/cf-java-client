@@ -815,6 +815,27 @@ public class CloudControllerClientImpl implements CloudControllerClient {
 	}
 
 	@Override
+	public List<CloudServiceInstance> getServiceInstances() {
+		Map<String, Object> urlVars = new HashMap<String, Object>();
+		String urlPath = "/v2";
+		if (sessionSpace != null) {
+			urlVars.put("space", sessionSpace.getMeta().getGuid());
+			urlPath = urlPath + "/spaces/{space}";
+		}
+		urlPath = urlPath + "/service_instances?inline-relations-depth=1&return_user_provided_service_instances=true";
+		List<Map<String, Object>> resourceList = getAllResources(urlPath, urlVars);
+		List<CloudServiceInstance> services = new ArrayList<CloudServiceInstance>();
+		for (Map<String, Object> resource : resourceList) {
+			if (hasEmbeddedResource(resource, "service_plan")) {
+				fillInEmbeddedResource(resource, "service_plan", "service");
+			}
+			fillInEmbeddedResource(resource, "space", "organization");
+			services.add(resourceMapper.mapResource(resource, CloudServiceInstance.class));
+		}
+		return services;
+	}
+
+	@Override
 	public void createService(CloudService service) {
 		assertSpaceProvided("create service");
 		Assert.notNull(service, "Service must not be null");
@@ -1786,13 +1807,13 @@ public class CloudControllerClientImpl implements CloudControllerClient {
 	@Override
 	public CloudOrganization getOrgByGuid(UUID orgGuid, boolean required) {
 		Map<String, Object> urlVars = new HashMap<String, Object>();
-		String urlPath = "/v2/organizations/{orgGuid}/spaces?inline-relations-depth=1&q=name:{name}";
+		String urlPath = "/v2/organizations/{orgGuid}";
 		urlVars.put("orgGuid", orgGuid);
 		CloudOrganization org = null;
-		List<Map<String, Object>> resourceList = getAllResources(urlPath, urlVars);
-		if (resourceList.size() > 0) {
-			Map<String, Object> resource = resourceList.get(0);
-			org = resourceMapper.mapResource(resource, CloudOrganization.class);
+		String resp = getRestTemplate().getForObject(getUrl(urlPath), String.class, urlVars);
+		Map<String, Object> orgResource = JsonUtil.convertJsonToMap(resp);
+		if (orgResource != null) {
+			org = resourceMapper.mapResource(orgResource, CloudOrganization.class);
 		}
 
 		if (org == null && required) {
@@ -2468,6 +2489,7 @@ public class CloudControllerClientImpl implements CloudControllerClient {
 			fillInEmbeddedResource(resource, "service_bindings", "service_instance");
 		}
 		fillInEmbeddedResource(resource, "stack");
+		fillInEmbeddedResource(resource, "space", "organization");
 		return resource;
 	}
 

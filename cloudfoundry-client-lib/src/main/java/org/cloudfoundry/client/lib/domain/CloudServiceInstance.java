@@ -33,6 +33,7 @@ public class CloudServiceInstance extends CloudEntity {
 	private String dashboardUrl;
 	private Map<String, Object> credentials;
 	private List<CloudServiceBinding> bindings;
+	private CloudSpace space;
 
 	public CloudServiceInstance() {
 		super();
@@ -88,5 +89,13 @@ public class CloudServiceInstance extends CloudEntity {
 
 	public void setServicePlan(CloudServicePlan servicePlan) {
 		this.servicePlan = servicePlan;
+	}
+
+	public CloudSpace getSpace() {
+		return space;
+	}
+
+	public void setSpace(CloudSpace space) {
+		this.space = space;
 	}
 }

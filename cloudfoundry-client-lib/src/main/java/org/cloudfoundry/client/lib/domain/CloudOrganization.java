@@ -24,6 +24,10 @@ public class CloudOrganization extends CloudEntity {
 	private boolean billingEnabled = false;
 	private CloudQuota quota;
 
+	public CloudOrganization() {
+		super();
+	}
+
 	public CloudOrganization(Meta meta, String name) {
 		this(meta, name, false);
 	}
@@ -35,7 +39,7 @@ public class CloudOrganization extends CloudEntity {
 
 	public CloudOrganization(Meta meta, String name, CloudQuota quota, boolean billingEnabled) {
 		super(meta, name);
-		this.quota=quota;
+		this.quota = quota;
 		this.billingEnabled = billingEnabled;
 	}
 

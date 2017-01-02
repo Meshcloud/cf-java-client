@@ -538,6 +538,11 @@ public class CloudFoundryClient implements CloudFoundryOperations {
 	}
 
 	@Override
+	public List<CloudServiceInstance> getServicesInstances() {
+		return cc.getServiceInstances();
+	}
+
+	@Override
 	public CloudServiceInstance getServiceInstance(String service) {
 		return cc.getServiceInstance(service);
 	}

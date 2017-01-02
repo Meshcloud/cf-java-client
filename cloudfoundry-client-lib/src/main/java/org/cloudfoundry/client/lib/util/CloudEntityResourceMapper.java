@@ -290,6 +290,9 @@ public class CloudEntityResourceMapper {
 		CloudService service = mapServiceResource(resource);
 		serviceInstance.setService(service);
 
+		CloudSpace space = mapSpaceResource(getEmbeddedResource(resource, "space"));
+		serviceInstance.setSpace(space);
+
 		List<Map<String, Object>> bindingsResource = getEmbeddedResourceList(getEntity(resource), "service_bindings");
 		List<CloudServiceBinding> bindings = new ArrayList<>(bindingsResource.size());
 		for (Map<String, Object> bindingResource : bindingsResource) {

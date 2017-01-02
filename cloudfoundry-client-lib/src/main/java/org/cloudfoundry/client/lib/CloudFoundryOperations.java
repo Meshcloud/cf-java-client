@@ -1445,4 +1445,9 @@ public interface CloudFoundryOperations {
 
 	void unbindService(UUID appGuid, UUID serviceInstanceGuid);
 
+	/**
+	 * @return
+	 */
+	List<CloudServiceInstance> getServicesInstances();
+
 }

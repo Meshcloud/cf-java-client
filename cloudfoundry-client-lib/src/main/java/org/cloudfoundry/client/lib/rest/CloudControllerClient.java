@@ -335,4 +335,6 @@ public interface CloudControllerClient {
 	void unbindService(UUID appGuid, UUID serviceInstanceGuid);
 
 	void bindService(UUID appGuid, UUID serviceId);
+
+	List<CloudServiceInstance> getServiceInstances();
 }
